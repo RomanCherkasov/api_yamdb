@@ -25,10 +25,11 @@ class Titles(models.Model):
 
 
 class Categories(models.Model):
+    # TODO: AttributeError: module 'django.db.models' has no attribute 'Choices'
     # title = models.Choices()
 
     def __str__(self):
-        return 'self.title' 
+        return 'self.title'
 
 
 class Genres(models.Model):
