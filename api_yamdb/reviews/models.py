@@ -18,13 +18,7 @@ class Titles(models.Model):
         null=True,
         on_delete=models.SET_NULL,
     )
-    genres = models.ForeignKey(
-        "Genres",
-        blank=True,
-        null=True,
-        on_delete=models.SET_NULL,
-    )
-    
+  
 
     class Meta:
         ordering = ['-pub_date']
@@ -42,6 +36,10 @@ class Categories(models.Model):
 
 class Genres(models.Model):
     title = models.CharField(max_length=200)
-    
+    titles = models.ForeignKey(
+        Titles,
+        on_delete=models.SET_NULL,
+        related_name='genres'
+    )
     def __str__(self):
         return self.title
