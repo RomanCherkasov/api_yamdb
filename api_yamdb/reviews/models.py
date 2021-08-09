@@ -69,10 +69,10 @@ class Comment(models.Model):
 
 
 class Categories(models.Model):
-    title = models.Choices()
+    # title = models.Choices()
 
     def __str__(self):
-        return self.title
+        return 'self title'  # self.title
 
 
 class Genres(models.Model):
@@ -80,7 +80,8 @@ class Genres(models.Model):
     titles = models.ForeignKey(
         Titles,
         on_delete=models.SET_NULL,
-        related_name='genres'
+        related_name='genres',
+        null=True
     )
 
     def __str__(self):
