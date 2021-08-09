@@ -92,3 +92,23 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text[:15]
+
+  class Categories(models.Model):
+      # title = models.Choices()
+
+      def __str__(self):
+          return 'self title'  # self.title
+
+
+  class Genres(models.Model):
+      title = models.CharField(max_length=200)
+      titles = models.ForeignKey(
+          Titles,
+          on_delete=models.SET_NULL,
+          related_name='genres',
+          null=True
+      )
+
+      def __str__(self):
+          return self.title
+
