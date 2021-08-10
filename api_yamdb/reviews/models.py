@@ -30,12 +30,13 @@ class Review(models.Model):
 
 class Titles(models.Model):
     name = models.CharField(max_length=200)
-    pub_date = models.DateTimeField("date published", auto_now_add=True)
+    year = models.DateTimeField("date published", auto_now_add=True)
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="titles"
     )
+    description = models.TextField()
     categories = models.ForeignKey(
         "Categories",
         blank=True,
@@ -44,7 +45,7 @@ class Titles(models.Model):
     )
 
     class Meta():
-        ordering = ["pub_date"]
+        ordering = ["year"]
 
 
 class Comment(models.Model):
@@ -69,14 +70,16 @@ class Comment(models.Model):
 
 
 class Categories(models.Model):
-    title = models.CharField(max_length=200)
+    name = models.CharField(max_length=256)
+    slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
         return self.title
 
 
 class Genres(models.Model):
-    title = models.CharField(max_length=200)
+    name = models.CharField(max_length=256)
+    slug = models.SlugField(unique=True)
     titles = models.ForeignKey(
         Titles,
         null=True,
