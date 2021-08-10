@@ -7,3 +7,4 @@ class User(AbstractUser):
         'Биография',
         blank=True
     )
+    # some comment
