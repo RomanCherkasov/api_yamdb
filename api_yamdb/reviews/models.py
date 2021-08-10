@@ -69,7 +69,7 @@ class Comment(models.Model):
 
 
 class Categories(models.Model):
-    title = models.Choices()
+    title = models.CharField(max_length=200)
 
     def __str__(self):
         return self.title
@@ -79,6 +79,7 @@ class Genres(models.Model):
     title = models.CharField(max_length=200)
     titles = models.ForeignKey(
         Titles,
+        null=True,
         on_delete=models.SET_NULL,
         related_name='genres'
     )
