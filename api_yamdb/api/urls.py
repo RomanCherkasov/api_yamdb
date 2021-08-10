@@ -1,5 +1,4 @@
-from rest_framework.viewsets import GenericViewSet
-from api.views import (CategoriesViewSet, GenresViewSet, TitlesSerializer, CategoriesSerializer, GenresSerializer, TitlesViewSet)
+from api.views import CategoriesViewSet, GenresViewSet, TitlesViewSet
 from django.urls import include, path
 from rest_framework import routers
 
