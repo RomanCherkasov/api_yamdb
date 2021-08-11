@@ -7,3 +7,14 @@ class User(AbstractUser):
         'Биография',
         blank=True
     )
+    password = models.CharField(
+        'password',
+        max_length=128,
+        blank=True
+    )
+    role = models.CharField(
+        'Роль',
+        max_length=128,
+        blank=False,
+        default='user',
+    )
