@@ -5,6 +5,7 @@ from reviews.models import Categories, Comment, Genres, Review, Titles
 class TitlesSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='username',
                                           read_only=True)
+    desciption = serializers.StringRelatedField(required=False)
 
     class Meta:
         model = Titles
@@ -12,10 +13,11 @@ class TitlesSerializer(serializers.ModelSerializer):
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
-
+    titles = serializers.StringRelatedField(many=True, read_only=True)
+    
     class Meta:
         model = Categories
-        fields = '__all__'
+        fields = ('name', 'slug') 
 
 
 class GenresSerializer(serializers.ModelSerializer):
@@ -23,7 +25,7 @@ class GenresSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genres
-        fields = '__all__'
+        fields = ('name', 'slug') 
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -35,6 +37,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
+        read_only_fields = ('title',)
 
 
 class CommentSerializer(serializers.ModelSerializer):
