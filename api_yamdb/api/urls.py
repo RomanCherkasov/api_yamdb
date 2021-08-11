@@ -1,6 +1,5 @@
 from django.urls import include, path
 from rest_framework import routers
-from rest_framework.viewsets import GenericViewSet
 
 from api.views import (CategoriesViewSet, CommentViewSet, GenresViewSet,
                        ReviewViewSet, TitlesViewSet)

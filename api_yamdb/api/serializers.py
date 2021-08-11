@@ -14,10 +14,10 @@ class TitlesSerializer(serializers.ModelSerializer):
 
 class CategoriesSerializer(serializers.ModelSerializer):
     titles = serializers.StringRelatedField(many=True, read_only=True)
-    
+
     class Meta:
         model = Categories
-        fields = ('name', 'slug') 
+        fields = ('name', 'slug')
 
 
 class GenresSerializer(serializers.ModelSerializer):
@@ -25,7 +25,7 @@ class GenresSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Genres
-        fields = ('name', 'slug') 
+        fields = ('name', 'slug')
 
 
 class ReviewSerializer(serializers.ModelSerializer):

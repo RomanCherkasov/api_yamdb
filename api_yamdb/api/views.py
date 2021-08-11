@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
-from reviews.models import Categories, Comment, Genres, Review, Titles
+from reviews.models import Categories, Genres, Review, Titles
 
 from api.permissions import IsAdminOrReadOnly
 from api.serializers import (CategoriesSerializer, CommentSerializer,
@@ -14,7 +14,7 @@ class TitlesViewSet(viewsets.ModelViewSet):
     serializer_class = TitlesSerializer
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('categories', 'genres', 'name', 'year') 
+    filterset_fields = ('categories', 'genres', 'name', 'year')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
