@@ -1,20 +1,17 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
 
 class User(AbstractUser):
-    bio = models.TextField(
-        'Биография',
-        blank=True
-    )
-    password = models.CharField(
-        'password',
-        max_length=128,
-        blank=True
-    )
+    email = models.EmailField(unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     role = models.CharField(
         'Роль',
         max_length=128,
-        blank=False,
-        default='user',
+        null=True,
+    )
+    bio = models.TextField(
+        'Биография',
+        null=True
     )
