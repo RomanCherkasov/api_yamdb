@@ -5,11 +5,16 @@ from reviews.models import Categories, Comment, Genres, Review, Titles
 class TitlesSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='username',
                                           read_only=True)
-    desciption = serializers.StringRelatedField(required=False)
+    description = serializers.StringRelatedField(required=False)
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Titles
         fields = '__all__'
+
+    def get_rating(self, obj):
+        reviews = sum(obj.reviews.values_list("score", flat=True))
+        return reviews / obj.reviews.count()
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
@@ -36,8 +41,17 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
         read_only_fields = ('title',)
+
+    def validate(self, data):
+        author = self.context['request'].user
+        review = Review.objects.filter(author=author)
+        if review:
+            raise serializers.ValidationError(
+                "Пользователь может оставить только один отзыв!"
+            )
+        return data
 
 
 class CommentSerializer(serializers.ModelSerializer):

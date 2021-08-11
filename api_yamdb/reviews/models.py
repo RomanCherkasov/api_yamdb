@@ -22,6 +22,9 @@ class Titles(models.Model):
     class Meta():
         ordering = ["year"]
 
+    def __str__(self):
+        return self.name
+
 
 class Categories(models.Model):
     name = models.CharField(max_length=256)
