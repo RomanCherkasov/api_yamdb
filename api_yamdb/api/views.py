@@ -1,10 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import serializers, viewsets, status
+from rest_framework import viewsets
 from reviews.models import Categories, Genres, Review, Title
-from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
-from django.db import IntegrityError
 from api.permissions import FullAcessOrReadOnlyPermission, IsAdminOrReadOnly
 from api.serializers import (CategoriesSerializer, CommentSerializer,
                              GenresSerializer, ReviewSerializer,
