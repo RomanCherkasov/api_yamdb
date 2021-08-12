@@ -1,5 +1,14 @@
+from datetime import datetime, timedelta
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+import jwt
+
+CHOICES = (
+    ('user', 'user'),
+    ('moderator','moderator'),
+    ('admin','admin'),
+    )
 
 
 class User(AbstractUser):
@@ -8,10 +17,13 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     role = models.CharField(
         'Роль',
-        max_length=128,
-        null=True,
+        max_length=16,
+        null=False,
+        default='user',
+        choices=CHOICES,
     )
     bio = models.TextField(
         'Биография',
-        null=True
+        null=False,
+        default='Без биографии'
     )
