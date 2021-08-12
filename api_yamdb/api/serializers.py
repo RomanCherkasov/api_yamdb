@@ -18,7 +18,7 @@ class TitlesSerializer(serializers.ModelSerializer):
         if obj.reviews.count():
             reviews = sum(obj.reviews.values_list("score", flat=True))
             return reviews / obj.reviews.count()
-        return 0
+        return None
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
