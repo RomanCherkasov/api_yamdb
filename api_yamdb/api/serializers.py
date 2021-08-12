@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from reviews.models import Categories, Comment, Genres, Review, Titles
+from reviews.models import Categorie, Comment, Genre, Review, Title
 
 
 class TitlesSerializer(serializers.ModelSerializer):
@@ -7,9 +7,11 @@ class TitlesSerializer(serializers.ModelSerializer):
                                           read_only=True)
     description = serializers.StringRelatedField(required=False)
     rating = serializers.SerializerMethodField()
-
+    category = serializers.SlugRelatedField(slug_field='name',
+                                          read_only=True)
+    
     class Meta:
-        model = Titles
+        model = Title
         fields = '__all__'
 
     def get_rating(self, obj):
@@ -23,17 +25,15 @@ class CategoriesSerializer(serializers.ModelSerializer):
     titles = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
-        model = Categories
+        model = Categorie
         fields = ('name', 'slug')
 
 
 class GenresSerializer(serializers.ModelSerializer):
-    # titles = serializers.StringRelatedField(many=True, read_only=True)
-
+ 
     class Meta:
-        model = Genres
+        model = Genre
         fields = ('name', 'slug')
-        read_only_fields = ('title',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):

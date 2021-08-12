@@ -3,7 +3,7 @@ from django.db import models
 from users.models import User
 
 
-class Titles(models.Model):
+class Title(models.Model):
     name = models.CharField(max_length=200)
     year = models.IntegerField()
     author = models.ForeignKey(
@@ -12,12 +12,14 @@ class Titles(models.Model):
         related_name="titles"
     )
     description = models.TextField()
-    categories = models.ForeignKey(
-        "Categories",
+    category = models.ForeignKey(
+        "Categorie",
         blank=True,
         null=True,
         on_delete=models.SET_NULL,
+        related_name="titles"
     )
+    
 
     class Meta():
         ordering = ["year"]
@@ -26,7 +28,7 @@ class Titles(models.Model):
         return self.name
 
 
-class Categories(models.Model):
+class Categorie(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=50, unique=True)
 
@@ -34,11 +36,11 @@ class Categories(models.Model):
         return self.title
 
 
-class Genres(models.Model):
+class Genre(models.Model):
     name = models.CharField(max_length=256)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
     titles = models.ForeignKey(
-        Titles,
+        Title,
         null=True,
         on_delete=models.SET_NULL,
         related_name='genres'
@@ -50,7 +52,7 @@ class Genres(models.Model):
 
 class Review(models.Model):
     title = models.ForeignKey(
-        Titles,
+        Title,
         on_delete=models.CASCADE,
         related_name="reviews"
     )
