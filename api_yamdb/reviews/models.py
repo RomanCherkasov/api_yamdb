@@ -3,7 +3,7 @@ from django.db import models
 from users.models import User
 
 
-class Titles(models.Model):
+class Title(models.Model):
     name = models.CharField(max_length=200)
     year = models.IntegerField()
     author = models.ForeignKey(
@@ -38,7 +38,7 @@ class Genres(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(unique=True)
     titles = models.ForeignKey(
-        Titles,
+        Title,
         null=True,
         on_delete=models.SET_NULL,
         related_name='genres'
@@ -50,12 +50,12 @@ class Genres(models.Model):
 
 class Review(models.Model):
     title = models.ForeignKey(
-        Titles,
+        Title,
         on_delete=models.CASCADE,
         related_name="reviews"
     )
     text = models.TextField(verbose_name="Текст")
-    author = models.ForeignKey(
+    author = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         related_name="reviews"
@@ -88,7 +88,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name="comments"
     )
-    created = models.DateTimeField(
+    pub_date = models.DateTimeField(
         "Дата и время публикации",
         auto_now_add=True
     )

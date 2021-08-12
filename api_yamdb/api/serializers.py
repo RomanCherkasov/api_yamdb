@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from reviews.models import Categories, Comment, Genres, Review, Titles
+from reviews.models import Categories, Comment, Genres, Review, Title
+from rest_framework.serializers import UniqueTogetherValidator
 
 
 class TitlesSerializer(serializers.ModelSerializer):
@@ -9,7 +10,7 @@ class TitlesSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
 
     class Meta:
-        model = Titles
+        model = Title
         fields = '__all__'
 
     def get_rating(self, obj):
@@ -45,19 +46,27 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ('id', 'text', 'author', 'score', 'pub_date')
+        # fields = '__all__'
         read_only_fields = ('title',)
+        # validators = [
+        #     UniqueTogetherValidator(
+        #         queryset=Review.objects.all(),
+        #         fields=('title', 'author'),
+        #         message="Возможен только один отзыв!"
+        #     )
+        # ]
 
-    def validate(self, data):
-        id_review = self.context['request'].get_full_path().split('/')
-        author = self.context['request'].user
-        review = Review.objects.filter(
-            title=id_review[4]).filter(author=author)
-        if review:
-            raise serializers.ValidationError(
-                'Пользователь может оставить '
-                'только один отзыв на произведение!'
-            )
-        return data
+    # def validate(self, data):
+    #     id_review = self.context['request'].get_full_path().split('/')
+    #     author = self.context['request'].user
+    #     review = Review.objects.filter(
+    #         title=id_review[4]).filter(author=author)
+    #     if review:
+    #         raise serializers.ValidationError(
+    #             'Пользователь может оставить '
+    #             'только один отзыв на произведение!'
+    #         )
+    #     return data
 
 
 class CommentSerializer(serializers.ModelSerializer):

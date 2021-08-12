@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import serializers, viewsets, status
+from reviews.models import Categories, Genres, Review, Title
 from rest_framework.response import Response
-from reviews.models import Categories, Genres, Review, Titles
-from rest_framework import status
-
+from rest_framework.exceptions import ValidationError
+from django.db import IntegrityError
 from api.permissions import FullAcessOrReadOnlyPermission, IsAdminOrReadOnly
 from api.serializers import (CategoriesSerializer, CommentSerializer,
                              GenresSerializer, ReviewSerializer,
@@ -12,7 +12,7 @@ from api.serializers import (CategoriesSerializer, CommentSerializer,
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
-    queryset = Titles.objects.all()
+    queryset = Title.objects.all()
     serializer_class = TitlesSerializer
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = (DjangoFilterBackend,)
@@ -39,12 +39,17 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [FullAcessOrReadOnlyPermission]
 
     def perform_create(self, serializer):
-        title = get_object_or_404(Titles, pk=self.kwargs.get('title_id'))
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+        if title.reviews.filter(author=self.request.user).exists():
+            raise ValidationError(
+                'Пользователь может оставить '
+                'только один отзыв на произведение!'
+            )
         serializer.save(author=self.request.user, title_id=title.id)
 
     def get_queryset(self):
-        title = get_object_or_404(Titles, pk=self.kwargs.get('title_id'))
-        return title.reviews
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+        return title.reviews.all()
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -65,4 +70,4 @@ class CommentViewSet(viewsets.ModelViewSet):
             title__id=self.kwargs.get('title_id'),
             pk=self.kwargs.get('review_id')
         )
-        return review.comments
+        return review.comments.all()
