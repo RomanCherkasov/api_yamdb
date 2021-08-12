@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
 from django_filters.rest_framework import DjangoFilterBackend
 from users.models import User
-
+from rest_framework.decorators import action
 from users.serializers import RegistrationSerializer, UsersSerializer
 from users.permissions import AdminOnly
 
@@ -27,11 +27,12 @@ class RegistrationsAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {
-            'username':serializer.data.get('username'),
-            'email':serializer.data.get('email')}
+            'username': serializer.data.get('username'),
+            'email': serializer.data.get('email')}
         confirm_code = default_token_generator.make_token(User.objects.last())
         print(confirm_code)
         return Response(data, status=status.HTTP_200_OK)
+
 
 class TokenSenderAPIView(APIView):
     permission_classes = (AllowAny,)
@@ -62,26 +63,30 @@ class UserViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(User, username=username)
         return user
 
+    @action(detail=False, permission_classes=(IsAuthenticated,), methods=['patch', 'get', 'post'])
+    def me(self, request):
+        print(request.method)
+        if request.method == 'GET':
+            user = get_object_or_404(User, username=self.request._user)
+            data = {"username": user.username,
+                    "email": user.email,
+                    "role": user.role,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "bio": user.bio}
+            return Response(data)
 
-class MeViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UsersSerializer
-    permission_classes = (AllowAny,)
-    @action(detail=False)
-    def get_object(self):
-        return get_object_or_404(User, username=self.request._user)
-
-# class MeAPIView(APIView):
-#     permission_classes = (AllowAny,)
-#     serializer_class = UsersSerializer
-#     def get(self, request):
-#         user = self.request._user
-#         data = {
-#             "username": user.username,
-#             "email": user.email,
-#             "role": user.role,
-#             "first_name": user.first_name,
-#             "last_name": user.last_name,
-#             "bio": user.bio
-#         }
-#         return Response(data)
+        if request.method == 'PATCH':
+            print(request.data)
+            user = get_object_or_404(User, username=self.request._user)
+            print(user.email)
+            data = request.data
+            if user.role == 'user' and request.data.get('role') != 'user':
+                data._mutable = True
+                data.update({'role': 'user'})
+                data._mutable = False
+            serializer = self.serializer_class(data=data)
+            serializer.is_valid(raise_exception=False)
+            serializer.update(user, data)
+            print(user)
+            return Response(data, status=status.HTTP_200_OK)
