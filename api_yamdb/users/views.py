@@ -22,8 +22,8 @@ class RegistrationsAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         data = {
-            'username':serializer.data.get('username'),
-            'email':serializer.data.get('email')}
+            'username': serializer.data.get('username'),
+            'email': serializer.data.get('email')}
         confirm_code = default_token_generator.make_token(User.objects.last())
         print(confirm_code)
         return Response(data, status=status.HTTP_200_OK)

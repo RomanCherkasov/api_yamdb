@@ -13,8 +13,10 @@ class TitlesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_rating(self, obj):
-        reviews = sum(obj.reviews.values_list("score", flat=True))
-        return reviews / obj.reviews.count()
+        if obj.reviews.count():
+            reviews = sum(obj.reviews.values_list("score", flat=True))
+            return reviews / obj.reviews.count()
+        return 0
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
@@ -26,11 +28,12 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 
 class GenresSerializer(serializers.ModelSerializer):
-    titles = serializers.StringRelatedField(many=True, read_only=True)
+    # titles = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Genres
         fields = ('name', 'slug')
+        read_only_fields = ('title',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -45,11 +48,14 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only_fields = ('title',)
 
     def validate(self, data):
+        id_review = self.context['request'].get_full_path().split('/')
         author = self.context['request'].user
-        review = Review.objects.filter(author=author)
+        review = Review.objects.filter(
+            title=id_review[4]).filter(author=author)
         if review:
             raise serializers.ValidationError(
-                "Пользователь может оставить только один отзыв!"
+                'Пользователь может оставить '
+                'только один отзыв на произведение!'
             )
         return data
 
