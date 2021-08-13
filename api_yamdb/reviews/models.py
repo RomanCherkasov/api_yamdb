@@ -14,10 +14,9 @@ class Title(models.Model):
     description = models.TextField()
     category = models.ForeignKey(
         "Categorie",
-        blank=True,
         null=True,
         on_delete=models.SET_NULL,
-        related_name="titles"
+        related_name="category"
     )
     
 
@@ -33,7 +32,7 @@ class Categorie(models.Model):
     slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Genre(models.Model):
@@ -43,11 +42,11 @@ class Genre(models.Model):
         Title,
         null=True,
         on_delete=models.SET_NULL,
-        related_name='genres'
+        related_name="genre"
     )
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Review(models.Model):

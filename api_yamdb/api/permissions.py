@@ -3,21 +3,29 @@ from rest_framework import permissions
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if view.action == 'list':
-            return True
-        elif view.action in ['create', 'update', 'partial_update', 'destroy']:
-            if request.user.is_authenticated:
-                return request.user.role == 'admin'
-            return False    
-        else:
-            return False
+    # def has_permission(self, request, view):
+    #     if view.action in ['list']:
+    #         return True
+    #     elif view.action in ['create', 'destroy']:
+    #         if request.user.is_authenticated:
+    #             return request.user.role == 'admin'
+    #         return False    
 
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        role = ('admin',)
-        return request.user.role in role or obj.author == request.user
+
+        if view.action is None:
+            return True
+        if view.action in ['create', 'destroy']:
+            if request.user.is_authenticated:
+                return request.user.role == 'admin'
+
+    # def has_object_permission(self, request, view, obj):
+    #     # if request.method in permissions.SAFE_METHODS:
+    #     #     return True
+    #     return request.user.role == 'admin'
+
 
 
 class FullAcessOrReadOnlyPermission(permissions.BasePermission):

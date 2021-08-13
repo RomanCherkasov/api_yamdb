@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, viewsets
+from rest_framework import filters, mixins, viewsets
 from rest_framework.response import Response
 from reviews.models import Categorie, Genre, Review, Title
 from rest_framework import status
@@ -17,24 +17,33 @@ class TitlesViewSet(viewsets.ModelViewSet):
     serializer_class = TitlesSerializer
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category', 'genres', 'name', 'year')
+    filterset_fields = ('category', 'genre', 'name', 'year')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+class CreateListDeleteViewSet(mixins.CreateModelMixin,
+                        mixins.ListModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
 
-class CategoriesViewSet(viewsets.ReadOnlyModelViewSet):
+    pass
+
+
+class CategoriesViewSet(CreateListDeleteViewSet):
     queryset = Categorie.objects.all()
     serializer_class = CategoriesSerializer
     permission_classes = [IsAdminOrReadOnly]
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    lookup_field = 'slug'
     
 
-class GenresViewSet(viewsets.ModelViewSet):
+class GenresViewSet(CreateListDeleteViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenresSerializer
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+    lookup_field = 'slug'
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer

@@ -2,27 +2,7 @@ from rest_framework import serializers
 from reviews.models import Categorie, Comment, Genre, Review, Title
 
 
-class TitlesSerializer(serializers.ModelSerializer):
-    author = serializers.SlugRelatedField(slug_field='username',
-                                          read_only=True)
-    description = serializers.StringRelatedField(required=False)
-    rating = serializers.SerializerMethodField()
-    category = serializers.SlugRelatedField(slug_field='name',
-                                          read_only=True)
-    
-    class Meta:
-        model = Title
-        fields = '__all__'
-
-    def get_rating(self, obj):
-        if obj.reviews.count():
-            reviews = sum(obj.reviews.values_list("score", flat=True))
-            return reviews / obj.reviews.count()
-        return None
-
-
 class CategoriesSerializer(serializers.ModelSerializer):
-    titles = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Categorie
@@ -30,10 +10,29 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 
 class GenresSerializer(serializers.ModelSerializer):
- 
+
     class Meta:
         model = Genre
         fields = ('name', 'slug')
+
+
+class TitlesSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(slug_field='username',
+                                          read_only=True)
+    description = serializers.StringRelatedField(required=False)
+    rating = serializers.SerializerMethodField()
+    category = CategoriesSerializer()
+    genre = GenresSerializer()                                    
+    
+    class Meta:
+        model = Title
+        fields = '__all__'
+        
+    def get_rating(self, obj):
+        if obj.reviews.count():
+            reviews = sum(obj.reviews.values_list("score", flat=True))
+            return reviews / obj.reviews.count()
+        return None
 
 
 class ReviewSerializer(serializers.ModelSerializer):
