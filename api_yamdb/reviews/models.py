@@ -16,9 +16,12 @@ class Title(models.Model):
         "Categorie",
         null=True,
         on_delete=models.SET_NULL,
-        related_name="category"
+        related_name="title"
     )
-    
+    genre = models.ManyToManyField(
+        "Genre",
+        related_name="title"
+    )
 
     class Meta():
         ordering = ["year"]
@@ -38,13 +41,7 @@ class Categorie(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=50, unique=True)
-    titles = models.ForeignKey(
-        Title,
-        null=True,
-        on_delete=models.SET_NULL,
-        related_name="genre"
-    )
-
+    
     def __str__(self):
         return self.name
 

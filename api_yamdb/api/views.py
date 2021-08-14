@@ -9,7 +9,7 @@ from rest_framework import status
 from api.permissions import FullAcessOrReadOnlyPermission, IsAdminOrReadOnly
 from api.serializers import (CategoriesSerializer, CommentSerializer,
                              GenresSerializer, ReviewSerializer,
-                             TitlesSerializer)
+                             TitlesSerializer, TitlesWriteSerializer)
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
@@ -18,7 +18,13 @@ class TitlesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category', 'genre', 'name', 'year')
-
+    
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return TitlesSerializer
+        else:
+            return TitlesWriteSerializer
+    
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
@@ -44,6 +50,7 @@ class GenresViewSet(CreateListDeleteViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
