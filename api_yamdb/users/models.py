@@ -4,8 +4,7 @@ from django.db import models
 CHOICES = (
     ('user', 'user'),
     ('moderator', 'moderator'),
-    ('admin', 'admin'),
-    )
+    ('admin', 'admin'),)
 
 
 class User(AbstractUser):
