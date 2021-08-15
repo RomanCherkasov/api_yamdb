@@ -1,9 +1,6 @@
-from django.http import request
 from rest_framework import status, viewsets
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.tokens import default_token_generator
-from rest_framework import permissions
-from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,7 +18,9 @@ class RegistrationsAPIView(APIView):
 
     def post(self, request):
         user = request.data
-        if request.data.get('username') and request.data.get('username') == 'me':
+        if request.data.get(
+                'username'
+        ) and request.data.get('username') == 'me':
             return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
@@ -38,8 +37,11 @@ class TokenSenderAPIView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        if request.data.get('username') and request.data.get('confirmation_code'):
-            user = get_object_or_404(User, username=request.data.get('username'))
+        if request.data.get(
+                'username'
+        ) and request.data.get('confirmation_code'):
+            user = get_object_or_404(User,
+                                     username=request.data.get('username'))
             confirmation_code = request.data.get('confirmation_code')
             if default_token_generator.check_token(user, confirmation_code):
                 return Response({
@@ -63,7 +65,8 @@ class UserViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(User, username=username)
         return user
 
-    @action(detail=False, permission_classes=(IsAuthenticated,), methods=['patch', 'get', 'post'])
+    @action(detail=False, permission_classes=(IsAuthenticated,),
+            methods=['patch', 'get', 'post'])
     def me(self, request):
         print(request.method)
         if request.method == 'GET':

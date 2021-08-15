@@ -1,5 +1,3 @@
-from django.contrib.auth import models
-from django.db.models import fields
 from rest_framework import serializers
 from users.models import User
 
@@ -18,5 +16,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'role', 'first_name', 'last_name', 'bio']
-
+        fields = ['username',
+                  'email',
+                  'role',
+                  'first_name',
+                  'last_name',
+                  'bio']

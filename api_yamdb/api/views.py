@@ -1,11 +1,8 @@
 from .filters import TitleFilter
-from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
-from rest_framework.response import Response
 from reviews.models import Categories, Genres, Review, Title
-from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
 from api.permissions import FullAcessOrReadOnlyPermission, IsAdminOrReadOnly, IsAdminOrReadOnlyPatch
@@ -30,9 +27,11 @@ class TitlesViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-class CreateListDeleteViewSet(mixins.CreateModelMixin,
-                        mixins.ListModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
 
+class CreateListDeleteViewSet(mixins.CreateModelMixin,
+                              mixins.ListModelMixin,
+                              mixins.DestroyModelMixin,
+                              viewsets.GenericViewSet):
     pass
 
 

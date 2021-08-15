@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.fields import IntegerField
 from reviews.models import Categories, Comment, Genres, Review, Title
 
 
@@ -23,14 +22,15 @@ class TitlesWriteSerializer(serializers.ModelSerializer):
         slug_field='username'
     )
     category = serializers.SlugRelatedField(slug_field='slug',
-                                          queryset=Categories.objects.all())
-    genre = serializers.SlugRelatedField(slug_field='slug', queryset = Genres.objects.all(), many=True)
+                                            queryset=Categories.objects.all())
+    genre = serializers.SlugRelatedField(slug_field='slug',
+                                         queryset=Genres.objects.all(),
+                                         many=True)
     
     class Meta:
         model = Title
         fields = '__all__'
 
- 
 
 class TitlesSerializer(serializers.ModelSerializer):
     category = CategoriesSerializer(read_only=True)
@@ -47,7 +47,6 @@ class TitlesSerializer(serializers.ModelSerializer):
             return reviews / obj.reviews.count()
         return None
     
-
 
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
