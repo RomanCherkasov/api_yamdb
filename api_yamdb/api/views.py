@@ -1,3 +1,4 @@
+from .filters import TitleFilter
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -6,7 +7,7 @@ from rest_framework.response import Response
 from reviews.models import Categorie, Genre, Review, Title
 from rest_framework import status
 
-from api.permissions import FullAcessOrReadOnlyPermission, IsAdminOrReadOnly
+from api.permissions import FullAcessOrReadOnlyPermission, IsAdminOrReadOnly, IsAdminOrReadOnlyPatch
 from api.serializers import (CategoriesSerializer, CommentSerializer,
                              GenresSerializer, ReviewSerializer,
                              TitlesSerializer, TitlesWriteSerializer)
@@ -15,9 +16,9 @@ from api.serializers import (CategoriesSerializer, CommentSerializer,
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitlesSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnlyPatch]
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category', 'genre', 'name', 'year')
+    filterset_class = TitleFilter
     
     def get_serializer_class(self):
         if self.request.method == 'GET':

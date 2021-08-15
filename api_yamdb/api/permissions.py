@@ -14,6 +14,17 @@ class IsAdminOrReadOnly(permissions.BasePermission):
             if request.user.is_authenticated:
                 return request.user.role == 'admin'
 
+class IsAdminOrReadOnlyPatch(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        if view.action is None:
+            return True
+        else:
+            if request.user.is_authenticated:
+                return request.user.role == 'admin'
 
 class FullAcessOrReadOnlyPermission(permissions.BasePermission):
 
