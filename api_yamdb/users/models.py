@@ -3,8 +3,8 @@ from django.db import models
 
 CHOICES = (
     ('user', 'user'),
-    ('moderator','moderator'),
-    ('admin','admin'),
+    ('moderator', 'moderator'),
+    ('admin', 'admin'),
     )
 
 

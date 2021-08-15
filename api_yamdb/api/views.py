@@ -47,7 +47,7 @@ class CategoriesViewSet(CreateListDeleteViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
-    
+
 
 class GenresViewSet(CreateListDeleteViewSet):
     queryset = Genres.objects.all()
