@@ -13,13 +13,13 @@ class Title(models.Model):
     )
     description = models.TextField()
     category = models.ForeignKey(
-        "Categorie",
+        "Categories",
         null=True,
         on_delete=models.SET_NULL,
         related_name="title"
     )
     genre = models.ManyToManyField(
-        "Genre",
+        "Genres",
         related_name="title"
     )
 
@@ -30,7 +30,7 @@ class Title(models.Model):
         return self.name
 
 
-class Categorie(models.Model):
+class Categories(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=50, unique=True)
 
@@ -38,7 +38,7 @@ class Categorie(models.Model):
         return self.name
 
 
-class Genre(models.Model):
+class Genres(models.Model):
     name = models.CharField(max_length=256)
     slug = models.SlugField(max_length=50, unique=True)
     

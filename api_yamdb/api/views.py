@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 from rest_framework.response import Response
-from reviews.models import Categorie, Genre, Review, Title
+from reviews.models import Categories, Genres, Review, Title
 from rest_framework import status
 
 from api.permissions import FullAcessOrReadOnlyPermission, IsAdminOrReadOnly, IsAdminOrReadOnlyPatch
@@ -36,7 +36,7 @@ class CreateListDeleteViewSet(mixins.CreateModelMixin,
 
 
 class CategoriesViewSet(CreateListDeleteViewSet):
-    queryset = Categorie.objects.all()
+    queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = (filters.SearchFilter,)
@@ -45,7 +45,7 @@ class CategoriesViewSet(CreateListDeleteViewSet):
     
 
 class GenresViewSet(CreateListDeleteViewSet):
-    queryset = Genre.objects.all()
+    queryset = Genres.objects.all()
     serializer_class = GenresSerializer
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = (filters.SearchFilter,)
