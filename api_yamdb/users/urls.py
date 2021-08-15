@@ -13,4 +13,3 @@ urlpatterns = [
     path('v1/auth/token/', TokenSenderAPIView.as_view()),
     path('v1/', include(router.urls))
 ]
-

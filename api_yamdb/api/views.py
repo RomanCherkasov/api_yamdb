@@ -5,10 +5,15 @@ from rest_framework import filters, mixins, viewsets
 from reviews.models import Categories, Genres, Review, Title
 from rest_framework.exceptions import ValidationError
 
-from api.permissions import FullAcessOrReadOnlyPermission, IsAdminOrReadOnly, IsAdminOrReadOnlyPatch
-from api.serializers import (CategoriesSerializer, CommentSerializer,
-                             GenresSerializer, ReviewSerializer,
-                             TitlesSerializer, TitlesWriteSerializer)
+from api.permissions import (FullAcessOrReadOnlyPermission,
+                             IsAdminOrReadOnly,
+                             IsAdminOrReadOnlyPatch)
+from api.serializers import (CategoriesSerializer,
+                             CommentSerializer,
+                             GenresSerializer,
+                             ReviewSerializer,
+                             TitlesSerializer,
+                             TitlesWriteSerializer)
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
@@ -17,13 +22,13 @@ class TitlesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnlyPatch]
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
-    
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return TitlesSerializer
         else:
             return TitlesWriteSerializer
-    
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 

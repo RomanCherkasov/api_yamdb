@@ -1,4 +1,3 @@
-from django.contrib import admin
 from rest_framework import permissions
 
 
@@ -10,7 +9,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 
         if view.action is None:
             return True
-        if view.action in ['create', 'destroy','update']:
+        if view.action in ['create', 'destroy', 'update']:
             if request.user.is_authenticated:
                 return request.user.role == 'admin'
 
