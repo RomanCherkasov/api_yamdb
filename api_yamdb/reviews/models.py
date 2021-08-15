@@ -69,6 +69,7 @@ class Review(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
+        unique_together = ('title', 'author')
 
     def __str__(self):
         return self.text[:15]
@@ -86,7 +87,7 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name="comments"
     )
-    created = models.DateTimeField(
+    pub_date = models.DateTimeField(
         "Дата и время публикации",
         auto_now_add=True
     )

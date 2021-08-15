@@ -22,10 +22,20 @@ class TitlesWriteSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='username'
     )
-    rating = serializers.SerializerMethodField(required=False)
     category = serializers.SlugRelatedField(slug_field='slug',
                                           queryset=Categories.objects.all())
     genre = serializers.SlugRelatedField(slug_field='slug', queryset = Genres.objects.all(), many=True)
+    
+    class Meta:
+        model = Title
+        fields = '__all__'
+
+ 
+
+class TitlesSerializer(serializers.ModelSerializer):
+    category = CategoriesSerializer(read_only=True)
+    genre = GenresSerializer(many=True)
+    rating = serializers.SerializerMethodField(required=False)
     
     class Meta:
         model = Title
@@ -36,15 +46,7 @@ class TitlesWriteSerializer(serializers.ModelSerializer):
             reviews = sum(obj.reviews.values_list("score", flat=True))
             return reviews / obj.reviews.count()
         return None
-
-
-class TitlesSerializer(serializers.ModelSerializer):
-    category = CategoriesSerializer(read_only=True)
-    genre = GenresSerializer(many=True)
-
-    class Meta:
-        model = Title
-        fields = '__all__'
+    
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -57,18 +59,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         read_only_fields = ('title',)
-
-    def validate(self, data):
-        id_review = self.context['request'].get_full_path().split('/')
-        author = self.context['request'].user
-        review = Review.objects.filter(
-            title=id_review[4]).filter(author=author)
-        if review:
-            raise serializers.ValidationError(
-                'Пользователь может оставить '
-                'только один отзыв на произведение!'
-            )
-        return data
 
 
 class CommentSerializer(serializers.ModelSerializer):
