@@ -95,4 +95,4 @@ class Comment(models.Model):
     )
 
     def __str__(self):
-        return self.text[:15]
+        return f'{self.author}, {self.pub_date}: {self.text[:15]}'

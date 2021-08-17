@@ -1,4 +1,6 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from reviews.models import Categories, Comment, Genres, Review, Title
 
 
@@ -35,17 +37,11 @@ class TitlesWriteSerializer(serializers.ModelSerializer):
 class TitlesSerializer(serializers.ModelSerializer):
     category = CategoriesSerializer(read_only=True)
     genre = GenresSerializer(many=True)
-    rating = serializers.SerializerMethodField(required=False)
+    rating = serializers.IntegerField()
 
     class Meta:
         model = Title
         fields = '__all__'
-
-    def get_rating(self, obj):
-        if obj.reviews.count():
-            reviews = sum(obj.reviews.values_list("score", flat=True))
-            return reviews / obj.reviews.count()
-        return None
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -58,6 +54,20 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         read_only_fields = ('title',)
+
+    def validate(self, data):
+        if self.context['request'].method == 'POST':
+            pk = self.context['request'].parser_context['kwargs']['title_id']
+            title = get_object_or_404(Title, pk=pk)
+            if title.reviews.filter(
+                author=self.context['request'].user
+            ).exists():
+                raise ValidationError(
+                    'Пользователь может оставить '
+                    'только один отзыв на произведение!'
+                )
+            return data
+        return data
 
 
 class CommentSerializer(serializers.ModelSerializer):
