@@ -1,27 +1,28 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
 from users.models import User
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=200)
-    year = models.IntegerField()
+    name = models.CharField(max_length=200, verbose_name="Наименование")
+    year = models.IntegerField(verbose_name="Год")
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name="titles"
     )
-    description = models.TextField()
+    description = models.TextField(verbose_name="Описание")
     category = models.ForeignKey(
         "Categories",
         null=True,
         on_delete=models.SET_NULL,
-        related_name="title"
+        related_name="title",
+        verbose_name="Категория"
     )
     genre = models.ManyToManyField(
         "Genres",
-        related_name="title"
+        related_name="title",
+        verbose_name="Жанр"
     )
 
     class Meta():

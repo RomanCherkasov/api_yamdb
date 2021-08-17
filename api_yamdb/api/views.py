@@ -1,33 +1,27 @@
+from api.permissions import FullAcessOrReadOnlyPermission, IsAdminOrReadOnly
+from api.serializers import (CategoriesSerializer, CommentSerializer,
+                             GenresSerializer, ReviewSerializer,
+                             TitlesSerializer, TitlesWriteSerializer)
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 from rest_framework.exceptions import ValidationError
-
-from api.permissions import (FullAcessOrReadOnlyPermission,
-                             IsAdminOrReadOnly,
-                             IsAdminOrReadOnlyPatch)
-from api.serializers import (CategoriesSerializer,
-                             CommentSerializer,
-                             GenresSerializer,
-                             ReviewSerializer,
-                             TitlesSerializer,
-                             TitlesWriteSerializer)
 from reviews.models import Categories, Genres, Review, Title
+
 from .filters import TitleFilter
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitlesSerializer
-    permission_classes = [IsAdminOrReadOnlyPatch]
+    permission_classes = [IsAdminOrReadOnly]
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return TitlesSerializer
-        else:
-            return TitlesWriteSerializer
+        return TitlesWriteSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
