@@ -1,15 +1,16 @@
-from rest_framework import status, viewsets
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.tokens import default_token_generator
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
-from django_filters.rest_framework import DjangoFilterBackend
+
 from users.models import User
-from rest_framework.decorators import action
-from users.serializers import RegistrationSerializer, UsersSerializer
 from users.permissions import AdminOnly
+from users.serializers import RegistrationSerializer, UsersSerializer
 
 
 class RegistrationsAPIView(APIView):
@@ -66,30 +67,16 @@ class UserViewSet(viewsets.ModelViewSet):
         return user
 
     @action(detail=False, permission_classes=(IsAuthenticated,),
-            methods=['patch', 'get', 'post'])
+            methods=['patch', 'get'])
     def me(self, request):
-        print(request.method)
         if request.method == 'GET':
             user = get_object_or_404(User, username=self.request._user)
-            data = {"username": user.username,
-                    "email": user.email,
-                    "role": user.role,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "bio": user.bio}
-            return Response(data)
+            serializer = self.get_serializer(user)
+            return Response(serializer.data)
 
         if request.method == 'PATCH':
-            print(request.data)
             user = get_object_or_404(User, username=self.request._user)
-            print(user.email)
-            data = request.data
-            if user.role == 'user' and request.data.get('role') != 'user':
-                data._mutable = True
-                data.update({'role': 'user'})
-                data._mutable = False
-            serializer = self.serializer_class(data=data)
-            serializer.is_valid(raise_exception=False)
-            serializer.update(user, data)
-            print(user)
-            return Response(data, status=status.HTTP_200_OK)
+            serializer = self.get_serializer(user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(role=user.role, partial=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)

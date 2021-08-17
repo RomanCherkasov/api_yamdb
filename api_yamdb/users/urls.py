@@ -5,11 +5,11 @@ from users.views import RegistrationsAPIView, TokenSenderAPIView, UserViewSet
 
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
+auth_url = [path('auth/signup/', RegistrationsAPIView.as_view()),
+            path('auth/token/', TokenSenderAPIView.as_view())]
 
-# router.register(r'users/(?P<username>\d+)', UserViewSet)
 app_name = 'users'
 urlpatterns = [
-    path('v1/auth/signup/', RegistrationsAPIView.as_view()),
-    path('v1/auth/token/', TokenSenderAPIView.as_view()),
+    path('v1/', include(auth_url)),
     path('v1/', include(router.urls))
 ]

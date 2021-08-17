@@ -1,8 +1,6 @@
-from .filters import TitleFilter
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
-from reviews.models import Categories, Genres, Review, Title
 from rest_framework.exceptions import ValidationError
 
 from api.permissions import (FullAcessOrReadOnlyPermission,
@@ -14,6 +12,8 @@ from api.serializers import (CategoriesSerializer,
                              ReviewSerializer,
                              TitlesSerializer,
                              TitlesWriteSerializer)
+from reviews.models import Categories, Genres, Review, Title
+from .filters import TitleFilter
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
