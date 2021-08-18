@@ -1,13 +1,16 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-CHOICES = (
-    ('user', 'user'),
-    ('moderator', 'moderator'),
-    ('admin', 'admin'),)
-
 
 class User(AbstractUser):
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
+    CHOICES = (
+        ('user', 'user'),
+        ('moderator', 'moderator'),
+        ('admin', 'admin'),)
+
     email = models.EmailField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -15,7 +18,7 @@ class User(AbstractUser):
         'Роль',
         max_length=16,
         null=False,
-        default='user',
+        default=USER,
         choices=CHOICES,
     )
     bio = models.TextField(
