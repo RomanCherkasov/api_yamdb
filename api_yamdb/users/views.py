@@ -75,7 +75,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
         if request.method == 'PATCH':
             user = get_object_or_404(User, username=self.request._user)
-            serializer = self.get_serializer(user, data=request.data, partial=True)
+            serializer = self.get_serializer(user,
+                                             data=request.data,
+                                             partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save(role=user.role, partial=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
