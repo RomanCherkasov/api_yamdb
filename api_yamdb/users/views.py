@@ -28,7 +28,6 @@ class RegistrationsAPIView(APIView):
         data = {
             'username': serializer.data.get('username'),
             'email': serializer.data.get('email')}
-        confirm_code = default_token_generator.make_token(User.objects.last())
         return Response(data, status=status.HTTP_200_OK)
 
 
@@ -47,8 +46,10 @@ class TokenSenderAPIView(APIView):
                     'token': str(AccessToken.for_user(user))
                 }, status=status.HTTP_200_OK)
             else:
-                return Response({'confirmation_code': 'Неверный код подтверждения'},
-                                status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'confirmation_code': 'Неверный код подтверждения'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
