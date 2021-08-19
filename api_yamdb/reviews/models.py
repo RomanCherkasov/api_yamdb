@@ -5,7 +5,7 @@ from users.models import User
 
 class Title(models.Model):
     name = models.CharField(max_length=200, verbose_name="Наименование")
-    year = models.IntegerField(verbose_name="Год")
+    year = models.IntegerField(db_index=True, verbose_name="Год")
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

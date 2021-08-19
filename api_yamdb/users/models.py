@@ -7,9 +7,9 @@ class User(AbstractUser):
     MODERATOR = 'moderator'
     ADMIN = 'admin'
     CHOICES = (
-        ('user', 'user'),
-        ('moderator', 'moderator'),
-        ('admin', 'admin'),)
+        (USER, 'user'),
+        (MODERATOR, 'moderator'),
+        (ADMIN, 'admin'),)
 
     email = models.EmailField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
