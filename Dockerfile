@@ -4,7 +4,7 @@ RUN mkdir /code
 
 COPY requirements.txt /code
 
-RUN pip3 install -r /code/requirments.txt
+RUN pip3 install -r /code/requirements.txt
 
 COPY . /code
 
