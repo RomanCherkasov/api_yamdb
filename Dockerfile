@@ -7,5 +7,5 @@ COPY requirements.txt /code
 RUN pip3 install -r /code/requirements.txt
 
 COPY . /code
-
-CMD python /code/api_yamdb/manage.py runserver 0:8000
+WORKDIR /code/api_yamdb
+CMD gunicorn api_yamdb.api_yamdb.wsgi:application --bind 0.0.0.0:8000 
